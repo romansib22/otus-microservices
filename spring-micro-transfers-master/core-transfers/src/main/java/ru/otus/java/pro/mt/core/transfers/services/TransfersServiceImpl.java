@@ -6,6 +6,7 @@ import ru.otus.java.pro.mt.core.transfers.configs.properties.TransfersProperties
 import ru.otus.java.pro.mt.core.transfers.dtos.ExecuteTransferDtoRq;
 import ru.otus.java.pro.mt.core.transfers.entities.Transfer;
 import ru.otus.java.pro.mt.core.transfers.exceptions_handling.BusinessLogicException;
+import ru.otus.java.pro.mt.core.transfers.integrations.notifications.KafkaProducer;
 import ru.otus.java.pro.mt.core.transfers.repositories.TransfersRepository;
 import ru.otus.java.pro.mt.core.transfers.validators.TransferRequestValidator;
 
@@ -21,6 +22,7 @@ public class TransfersServiceImpl implements TransfersService {
     private final TransferRequestValidator transferRequestValidator;
     private final TransfersProperties transfersProperties;
     private final LimitsServiceImpl limitsService;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     public Optional<Transfer> getTransferById(String id, String clientId) {
@@ -42,8 +44,9 @@ public class TransfersServiceImpl implements TransfersService {
         if (executeTransferDtoRq.getAmount().compareTo(transfersProperties.getMaxTransferSum()) > 0) {
             throw new BusinessLogicException("OOPS", "OOPS_CODE");
         }
-        Transfer transfer = new Transfer(UUID.randomUUID().toString(), "1", "2", "1", "2", "Demo", BigDecimal.ONE);
+        Transfer transfer = new Transfer(UUID.randomUUID().toString(), clientId, executeTransferDtoRq.getTargetClientId(), "1", "2", executeTransferDtoRq.getMessage(), executeTransferDtoRq.getAmount());
         save(transfer);
+        kafkaProducer.send(transfer);
     }
 
     @Override
