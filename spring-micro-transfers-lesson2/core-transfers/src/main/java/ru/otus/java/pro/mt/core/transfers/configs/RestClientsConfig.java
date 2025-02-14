@@ -18,13 +18,6 @@ public class RestClientsConfig {
     @Bean
     @ConditionalOnMissingBean(RestTemplate.class)
     public RestClient limitsClient(LimitsIntegrationProperties properties) {
-        return RestClient.builder()
-                .requestFactory(new HttpComponentsClientHttpRequestFactory())
-                .baseUrl(properties.getUrl())
-//                .defaultUriVariables(Map.of("variable", "foo"))
-//                .defaultHeader("My-Header", "Foo")
-//                .requestInterceptor(myCustomInterceptor)
-//                .requestInitializer(myCustomInitializer)
-                .build();
+        return RestClientFactory.getClient(properties);
     }
 }
