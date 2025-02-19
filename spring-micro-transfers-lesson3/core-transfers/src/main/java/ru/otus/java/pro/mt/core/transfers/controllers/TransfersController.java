@@ -50,6 +50,32 @@ public class TransfersController {
         );
     }
 
+    @GetMapping("/pagination")
+    @Operation(
+            summary = "Запрос списка переводов клиента с пагинацией",
+            responses = {
+                    @ApiResponse(
+                            description = "Успешный ответ", responseCode = "200",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TransfersPageDto.class))
+                    )
+            }
+    )
+    public TransfersPageDto getAllTransfersPaginated(
+            @Parameter(description = "Идентификатор клиента", required = true, schema = @Schema(type = "string", maxLength = 10, example = "1234567890"))
+            @RequestHeader(name = "client-id") String clientId,
+            @Parameter(description = "Номер страницы", required = true, schema = @Schema(type = "int", maxLength = 3, example = "1"))
+            @RequestParam int page,
+            @Parameter(description = "Элементов на странице", required = false, schema = @Schema(type = "int", maxLength = 3, example = "20"))
+            @RequestParam (defaultValue = "20") int limit
+    ) {
+        return new TransfersPageDto(
+                transfersService
+                        .getAllTransfersPaginated(clientId, page, limit)
+                        .stream()
+                        .map(ENTITY_TO_DTO).collect(Collectors.toList())
+        );
+    }
+
     @GetMapping("/{id}")
     @Operation(
             summary = "Запрос перевода клиента по идентификатору перевода",
