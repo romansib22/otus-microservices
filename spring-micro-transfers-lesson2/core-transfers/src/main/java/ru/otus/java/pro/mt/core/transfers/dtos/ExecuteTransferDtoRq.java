@@ -12,9 +12,40 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 public class ExecuteTransferDtoRq {
+    @Schema(
+            description = "Идентификатор клиента получателя",
+            example = "1234567890",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            maxLength = 10
+    )
     private String targetClientId;
+    @Schema(
+            description = "Номер счета отправителя",
+            example = "123456789012",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            minLength = 12,
+            maxLength = 12
+    )
     private String sourceAccount;
+    @Schema(
+            description = "Номер счета получателя",
+            example = "123456789012",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            minLength = 12,
+            maxLength = 12
+    )
     private String targetAccount;
+    @Schema(
+            description = "Сообщение получателю",
+            example = "В счёт погашения долга",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+            maxLength = 255
+    )
     private String message;
+    @Schema(
+            description = "Сумма",
+            example = "100.00",
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
     private BigDecimal amount;
 }
