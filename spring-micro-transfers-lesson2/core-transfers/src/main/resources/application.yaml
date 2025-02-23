@@ -20,9 +20,10 @@ transfers:
     - "456"
 integrations:
   limits:
-    url: http://localhost:8080/api/v1/limits
-    read-timeout: 30s
-    write-timeout: 2s
+    rest-client-props:
+      url: http://localhost:8080/api/v1/limits
+      read-timeout: 30s
+      connection-timeout: 5s
 logging:
   level:
     org.zalando.logbook.Logbook: TRACE
